@@ -1,19 +1,19 @@
 package main
 
 import (
+	"calhoun/views"
 	"fmt"
-	"html/template"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-var homeTemplate *template.Template
-var contactTemplate *template.Template
+var homeView 	*views.View
+var contactView *views.View
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := homeTemplate.Execute(w, nil)
+	err := homeView.Template.Execute(w, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -21,7 +21,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := contactTemplate.Execute(w, nil)
+	err := contactView.Template.Execute(w, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -39,16 +39,8 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	var err error
-	homeTemplate, err = template.ParseFiles("views/home.gohtml", "views/layouts/footer.gohtml")
-	if err != nil {
-		panic(err)
-	}
-
-	contactTemplate, err = template.ParseFiles("views/contact.gohtml", "views/layouts/footer.gohtml")
-	if err != nil {
-		panic(err)
-	}
+	homeView = views.NewView("views/home.gohtml")
+	contactView = views.NewView("views/contact.gohtml")
 
 	fmt.Println("Live on port :3000")
 

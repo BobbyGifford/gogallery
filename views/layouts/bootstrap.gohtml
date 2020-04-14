@@ -17,7 +17,11 @@
     <body>
     {{template "navbar"}}
     <div class="container-fluid">
+        {{/* Body */}}
         {{template "yield" .}}
+
+        {{/* Footer */}}
+        {{template "footer" .}}
     </div>
 
     <script src="//code.jquery.com/jquery-3.4.1.slim.min.js"

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"calhoun/controllers"
 	"calhoun/views"
 	"fmt"
 	"net/http"
@@ -11,7 +12,6 @@ import (
 var (
 	homeView    *views.View
 	contactView *views.View
-	signupView  *views.View
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -24,11 +24,6 @@ func contact(w http.ResponseWriter, r *http.Request) {
 	must(contactView.Render(w, nil))
 }
 
-func signup(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Content-Type", "text/html")
-	must(signupView.Render(w, nil))
-}
-
 func notFound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusNotFound)
@@ -38,15 +33,15 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 func main() {
 	homeView = views.NewView("bootstrap", "views/home.gohtml")
 	contactView = views.NewView("bootstrap", "views/contact.gohtml")
-	signupView = views.NewView("bootstrap", "views/signup.gohtml")
+	usersController := controllers.NewUsers()
 
-	fmt.Println("Live on port :3000")
+	fmt.Println("Live on http://localhost:3000/")
 
 	r := mux.NewRouter()
 	r.NotFoundHandler = http.HandlerFunc(notFound)
-	r.HandleFunc("/", home)
+	r.HandleFunc("/", home).Methods("GET")
 	r.HandleFunc("/contact", contact)
-	r.HandleFunc("/signup", signup)
+	r.HandleFunc("/signup", usersController.New)
 	_ = http.ListenAndServe(":3000", r)
 }
 
